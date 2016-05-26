@@ -4,13 +4,13 @@ namespace FootballDataSDK.Services.Interface
 {
     public interface ISoccerSeasonsServices
     {
-        SoccerSeasonResult SoccerSeasons();
-        TeamsResult Teams(int idSeason);
-        LeagueTableResult LeagueTable(int idSeason);
-        LeagueTableResult LeagueTable(int idSeason, int matchday);
-        FixturesResult Fixtures(int idSeason, int matchday, string timeFrame);
-        FixturesResult Fixtures(int idSeason);
-        FixturesResult Fixtures(int idSeason, int matchday);
-        FixturesResult Fixtures(int idSeason, string timeFrame);
+        SoccerSeasonResult GetSoccerSeasons();
+        TeamsResult GetTeams(int idSeason);
+        LeagueTableResult GetLeagueTable(int idSeason);
+        LeagueTableResult GetLeagueTable(int idSeason, int matchday);
+        FixturesResult GetFixtures(int idSeason, int matchday, string timeFrame);
+        FixturesResult GetFixtures(int idSeason);
+        FixturesResult GetFixtures(int idSeason, int matchday);
+        FixturesResult GetFixtures(int idSeason, string timeFrame);
     }
 }

@@ -6,10 +6,10 @@ namespace FootballDataSDK.Services.Interface
 {
     public interface ITeamServices
     {
-        Team Team(int idTeam);
-        FixturesResult FixturesByTeam(int idTeam);
-        FixturesResult FixturesByTeam(int idTeam, string timeFrame, string season, VenueEnum? venue = null);
-        PlayersResult Players(int idTeam);
+        Team GetTeam(int idTeam);
+        FixturesResult GetFixturesByTeam(int idTeam);
+        FixturesResult GetFixturesByTeam(int idTeam, string timeFrame, string season, VenueEnum? venue = null);
+        PlayersResult GetPlayers(int idTeam);
 
     }
 }

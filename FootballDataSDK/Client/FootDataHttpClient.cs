@@ -20,7 +20,9 @@ namespace FootballDataSDK.Client
             if (!string.IsNullOrWhiteSpace(token))
             {
                 this.DefaultRequestHeaders.Add("X-Auth-Token", token);
+                
             }
+            this.DefaultRequestHeaders.Add("X-Response-Control", "minified");
         }
     }
 }

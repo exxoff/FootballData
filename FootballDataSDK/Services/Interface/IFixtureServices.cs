@@ -4,9 +4,9 @@ namespace FootballDataSDK.Services.Interface
 {
     public interface IFixtureServices
     {
-        FixturesResult Fixtures();
-        FixturesResult Fixtures(string timeFrame, string league);
-        FixtureDetailsResult Fixture(int idFixture);
-        FixtureDetailsResult Fixture(int idFixture, int head2Head);
+        FixturesResult GetFixtures();
+        FixturesResult GetFixtures(string timeFrame, string league);
+        FixtureDetailsResult GetFixture(int idFixture);
+        FixtureDetailsResult GetFixture(int idFixture, int head2Head);
     }
 }

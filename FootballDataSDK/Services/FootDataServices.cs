@@ -30,7 +30,7 @@ namespace FootballDataSDK.Services
         /// List all available soccer seasons.	
         /// </summary>
         /// <returns></returns>
-        public SoccerSeasonResult SoccerSeasons()
+        public SoccerSeasonResult GetSoccerSeasons()
         {
             string url = "http://api.football-data.org/v1/soccerseasons";
             
@@ -58,7 +58,7 @@ namespace FootballDataSDK.Services
                     };
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -66,10 +66,77 @@ namespace FootballDataSDK.Services
 
             return null;
         }
-
-        public async Task<SoccerSeasonResult> SoccerSeasonsAsync()
+        public SoccerSeason GetCustomSeason(string url)
         {
-            string url = "http://api.football-data.org/v1/soccerseasons";
+            using (var client = new FootDataHttpClient(AuthToken))
+            {
+                try
+                {
+                    var res = client.GetAsync(new Uri(url)).Result;
+
+                    string responseString = res.Content.ReadAsStringAsync().Result;
+
+                    // Sanity Check
+                    if (string.IsNullOrEmpty(responseString) || res.StatusCode != HttpStatusCode.OK)
+                    {
+                        var err = JsonConvert.DeserializeObject<ErrorResult>(responseString);
+
+                        return new SoccerSeason();
+                    }
+
+                    var response = JsonConvert.DeserializeObject<SoccerSeason>(responseString);
+
+                    return response;
+
+                }
+                catch (Exception)
+                {
+                    //Ignore..
+                }
+            }
+
+            return null;
+
+        }
+
+        public async Task<SoccerSeason> GetCustomSeasonAsync(string url)
+        {
+            using (var client = new FootDataHttpClient(AuthToken))
+            {
+                try
+                {
+                    var res = await client.GetAsync(new Uri(url));
+
+                    string responseString = await res.Content.ReadAsStringAsync();
+
+                    // Sanity Check
+                    if (string.IsNullOrEmpty(responseString) || res.StatusCode != HttpStatusCode.OK)
+                    {
+                        var err = JsonConvert.DeserializeObject<ErrorResult>(responseString);
+
+                        return new SoccerSeason();
+                    }
+
+                    var response = JsonConvert.DeserializeObject<SoccerSeason>(responseString);
+
+                    return response;
+
+                }
+                catch (Exception)
+                {
+                    //Ignore..
+                }
+            }
+
+            return null;
+
+        }
+
+
+
+        public async Task<SoccerSeasonResult> GetSoccerSeasonsAsync(string customUrl = null)
+        {
+            string url = customUrl != null ? customUrl : "http://api.football-data.org/v1/soccerseasons";
 
             using (var client = new FootDataHttpClient(AuthToken))
             {
@@ -95,7 +162,7 @@ namespace FootballDataSDK.Services
                     };
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -105,7 +172,7 @@ namespace FootballDataSDK.Services
         }
 
 
-        public TeamsResult Teams(int idSeason)
+        public TeamsResult GetTeams(int idSeason)
         {
             string url = $"http://api.football-data.org/v1/soccerseasons/{idSeason}/teams";
 
@@ -131,7 +198,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -140,7 +207,7 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public async Task<TeamsResult> TeamsAsync(int idSeason)
+        public async Task<TeamsResult> GetTeamsAsync(int idSeason)
         {
             string url = $"http://api.football-data.org/v1/soccerseasons/{idSeason}/teams";
 
@@ -166,7 +233,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -175,17 +242,17 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public LeagueTableResult LeagueTable(int idSeason)
+        public LeagueTableResult GetLeagueTable(int idSeason)
         {
-            return LeagueTable(idSeason, -1);
+            return GetLeagueTable(idSeason, -1);
         }
 
-        public async Task<LeagueTableResult> LeagueTableAsync(int idSeason)
+        public async Task<LeagueTableResult> GetLeagueTableAsync(int idSeason)
         {
-            return await LeagueTableAsync(idSeason, -1);
+            return await GetLeagueTableAsync(idSeason, -1);
         }
 
-        public LeagueTableResult LeagueTable(int idSeason, int matchday)
+        public LeagueTableResult GetLeagueTable(int idSeason, int matchday)
         {
             string mDay = "";
 
@@ -217,7 +284,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -226,7 +293,7 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public async Task<LeagueTableResult> LeagueTableAsync(int idSeason, int matchday)
+        public async Task<LeagueTableResult> GetLeagueTableAsync(int idSeason, int matchday)
         {
             string mDay = "";
 
@@ -258,7 +325,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -268,7 +335,7 @@ namespace FootballDataSDK.Services
         }
 
 
-        public FixturesResult Fixtures(int idSeason,  int matchday, string timeFrame)
+        public FixturesResult GetFixtures(int idSeason,  int matchday, string timeFrame)
         {
             string p1 = "";
             if (matchday > 0)
@@ -298,7 +365,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -307,7 +374,7 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public async Task<FixturesResult> FixturesAsync(int idSeason, int matchday, string timeFrame)
+        public async Task<FixturesResult> GetFixturesAsync(int idSeason, int matchday, string timeFrame)
         {
             string p1 = "";
             if (matchday > 0)
@@ -337,7 +404,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -346,33 +413,33 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public FixturesResult Fixtures(int idSeason)
+        public FixturesResult GetFixtures(int idSeason)
         {
-            return Fixtures(idSeason, -1, null);
+            return GetFixtures(idSeason, -1, null);
         }
-        public async Task<FixturesResult> FixturesAsync(int idSeason)
+        public async Task<FixturesResult> GetFixturesAsync(int idSeason)
         {
-            return await FixturesAsync(idSeason, -1, null);
-        }
-
-        public FixturesResult Fixtures(int idSeason, int matchday)
-        {
-            return Fixtures(idSeason, matchday, null);
+            return await GetFixturesAsync(idSeason, -1, null);
         }
 
-        public async Task<FixturesResult> FixturesAsync(int idSeason, int matchday)
+        public FixturesResult GetFixtures(int idSeason, int matchday)
         {
-            return await FixturesAsync(idSeason, matchday, null);
+            return GetFixtures(idSeason, matchday, null);
         }
 
-        public FixturesResult Fixtures(int idSeason, string timeFrame)
+        public async Task<FixturesResult> GetFixturesAsync(int idSeason, int matchday)
         {
-            return Fixtures(idSeason, -1, timeFrame);
+            return await GetFixturesAsync(idSeason, matchday, null);
         }
 
-        public async Task<FixturesResult> FixturesAsync(int idSeason, string timeFrame)
+        public FixturesResult GetFixtures(int idSeason, string timeFrame)
         {
-            return await FixturesAsync(idSeason, -1, timeFrame);
+            return GetFixtures(idSeason, -1, timeFrame);
+        }
+
+        public async Task<FixturesResult> GetFixturesAsync(int idSeason, string timeFrame)
+        {
+            return await GetFixturesAsync(idSeason, -1, timeFrame);
         }
 
         #endregion
@@ -384,15 +451,15 @@ namespace FootballDataSDK.Services
         /// List fixtures across a set of soccerseasons.
         /// </summary>
         /// <returns></returns>
-        public FixturesResult Fixtures()
+        public FixturesResult GetFixtures()
         {
-            return Fixtures("", "");
+            return GetFixtures("", "");
         }
-        public async Task<FixturesResult> FixturesAsync()
+        public async Task<FixturesResult> GetFixturesAsync()
         {
-            return await FixturesAsync("", "");
+            return await GetFixturesAsync("", "");
         }
-        public FixturesResult Fixtures(string timeFrame, string league)
+        public FixturesResult GetFixtures(string timeFrame, string league)
         {
             string url = $"http://api.football-data.org/v1/fixtures?timeFrame={timeFrame}&league={league}";
 
@@ -416,7 +483,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -424,7 +491,7 @@ namespace FootballDataSDK.Services
 
             return null;
         }
-        public async Task<FixturesResult> FixturesAsync(string timeFrame, string league)
+        public async Task<FixturesResult> GetFixturesAsync(string timeFrame, string league)
         {
             string url = $"http://api.football-data.org/v1/fixtures?timeFrame={timeFrame}&league={league}";
 
@@ -449,7 +516,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -458,17 +525,17 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public FixtureDetailsResult Fixture(int idFixture)
+        public FixtureDetailsResult GetFixture(int idFixture)
         {
-            return Fixture(idFixture, 10);
+            return GetFixture(idFixture, 10);
         }
 
-        public async Task<FixtureDetailsResult> FixtureAsync(int idFixture)
+        public async Task<FixtureDetailsResult> GetFixtureAsync(int idFixture)
         {
-            return await FixtureAsync(idFixture, 10);
+            return await GetFixtureAsync(idFixture, 10);
         }
 
-        public FixtureDetailsResult Fixture(int idFixture, int head2Head)
+        public FixtureDetailsResult GetFixture(int idFixture, int head2Head)
         {
             string url = $"http://api.football-data.org/v1/fixtures/{idFixture}?head2head={head2Head}";
 
@@ -493,7 +560,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -502,7 +569,7 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public async Task<FixtureDetailsResult> FixtureAsync(int idFixture, int head2Head)
+        public async Task<FixtureDetailsResult> GetFixtureAsync(int idFixture, int head2Head)
         {
             string url = $"http://api.football-data.org/v1/fixtures/{idFixture}?head2head={head2Head}";
 
@@ -527,7 +594,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -541,7 +608,7 @@ namespace FootballDataSDK.Services
 
         #region Team Service
 
-        public Team Team(int idTeam)
+        public Team GetTeam(int idTeam)
         {
             string url = $"http://api.football-data.org/v1/teams/{idTeam}";
 
@@ -567,7 +634,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -602,7 +669,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -611,18 +678,18 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public FixturesResult FixturesByTeam(int idTeam)
+        public FixturesResult GetFixturesByTeam(int idTeam)
         {
             //string timeFrame, string season, VenueEnum? venue = null
-            return FixturesByTeam(idTeam, null, null, null);
+            return GetFixturesByTeam(idTeam, null, null, null);
         }
-        public async Task<FixturesResult> FixturesByTeamAsync(int idTeam)
+        public async Task<FixturesResult> GetFixturesByTeamAsync(int idTeam)
         {
             //string timeFrame, string season, VenueEnum? venue = null
-            return  await FixturesByTeamAsync(idTeam, null, null, null);
+            return  await GetFixturesByTeamAsync(idTeam, null, null, null);
         }
 
-        public FixturesResult FixturesByTeam(int idTeam, string timeFrame, string season, VenueEnum? venue = null)
+        public FixturesResult GetFixturesByTeam(int idTeam, string timeFrame, string season, VenueEnum? venue = null)
         {
             string url = $"http://api.football-data.org/v1/teams/{idTeam}/fixtures?timeFrame={timeFrame}&season={season}&venue={venue}";
 
@@ -646,7 +713,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -655,7 +722,7 @@ namespace FootballDataSDK.Services
             return null;
         }
 
-        public async  Task<FixturesResult> FixturesByTeamAsync(int idTeam, string timeFrame, string season, VenueEnum? venue = null)
+        public async  Task<FixturesResult> GetFixturesByTeamAsync(int idTeam, string timeFrame, string season, VenueEnum? venue = null)
         {
             string url = $"http://api.football-data.org/v1/teams/{idTeam}/fixtures?timeFrame={timeFrame}&season={season}&venue={venue}";
 
@@ -679,7 +746,7 @@ namespace FootballDataSDK.Services
 
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -689,7 +756,7 @@ namespace FootballDataSDK.Services
         }
 
 
-        public PlayersResult Players(int idTeam)
+        public PlayersResult GetPlayers(int idTeam)
         {
             string url = $"http://api.football-data.org/v1/teams/{idTeam}/players";
 
@@ -715,7 +782,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }
@@ -723,7 +790,7 @@ namespace FootballDataSDK.Services
 
             return null;
         }
-        public async Task<PlayersResult> PlayersAsync(int idTeam)
+        public async Task<PlayersResult> GetPlayersAsync(int idTeam)
         {
             string url = $"http://api.football-data.org/v1/teams/{idTeam}/players";
 
@@ -749,7 +816,7 @@ namespace FootballDataSDK.Services
                     return response;
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Ignore..
                 }

@@ -11,6 +11,6 @@ namespace FootballDataSDK.Models
         public int matchday { get; set; }
         public string homeTeamName { get; set; }
         public string awayTeamName { get; set; }
-        public ResultMatch ResultMatch { get; set; }
+        public ResultMatch result { get; set; }
     }
 }

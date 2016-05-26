@@ -12,7 +12,7 @@ namespace FootballDataSDK
             //This is Optional (Can be used without Token, but it's limited [request number])
             client.AuthToken = "Your Auth-Token Here ...";
 
-            var leagues = client.SoccerSeasons();
+            var leagues = client.GetSoccerSeasons();
 
             if (string.IsNullOrEmpty(leagues.error))
             {

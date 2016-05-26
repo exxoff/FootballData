@@ -5,6 +5,7 @@ namespace FootballDataSDK.Models
     public class Team
     {
         public LinksTeam _links { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public string code { get; set; }
         public string shortName { get; set; }
